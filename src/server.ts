@@ -1,17 +1,37 @@
-import { Request, Response } from "express";
+import "reflect-metadata"
+import express from 'express';
+import { CategoryController } from './controllers/category.controller';
+import { AppDataSource } from "./data-source";
 
-const express = require("express");
-const app = express();
+class Server {
+  private categoryController: CategoryController;
+  private app: express.Application;
 
-const PORT = 3000;
-const HOST = '0.0.0.0';
+  constructor() {
+    this.app = express();
+    this.configuration();
+    this.routes();
+  }
 
-app.post("/category", (req: Request, res: Response) => {
-  // res.json(req.body);
-});
+  public configuration() {
+    this.app.set('port', 3000);
+    this.app.set('host', "0.0.0.0");
+    this.app.use(express.json());
+  }
 
-app.get("/categories", (req: Request, res: Response) => {
-  return res;
-});
+  public async routes() {
+    AppDataSource.initialize()
+    this.categoryController = new CategoryController();
+    
+    this.app.use(`/api/categories/`, this.categoryController.router);
+  }
 
-app.listen(PORT, HOST);
+  public start() {
+    this.app.listen(this.app.get('port'), this.app.get('host'), () => {
+      console.log(`Server is listening ${this.app.get('port')} port.`);
+    })
+  }
+}
+
+const server = new Server();
+server.start();

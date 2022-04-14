@@ -9,21 +9,23 @@ export class CategoryService {
     this.categoryRepository = AppDataSource.getRepository(Category);
   }
 
-  public index = async () => {
-    const categories = await this.categoryRepository.find();
-    return categories;
+  public async index() {
+    return await this.categoryRepository.find();
   }
 
-  public create = async (category: Category) => {
-    const newCategory = await this.categoryRepository.save(category);
-    return newCategory;
+  public async create(category: Category) {
+    return await this.categoryRepository.save(category);
   }
 
-  public update = () => {
-    return 'update from service';
+  public async update(category: Category, id: number) {
+    return await this.categoryRepository.update(id, category);
   }
 
-  public delete = () => {
+  public async delete() {
     return 'delete from service';
+  }
+
+  public async getCategory(id: number) {
+    return await this.categoryRepository.findBy({ id });
   }
 }

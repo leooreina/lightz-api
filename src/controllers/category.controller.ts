@@ -26,13 +26,12 @@ export class CategoryController {
   public update = async (req: Request, res: Response) => {
     const category = req.body as Category;
     const id = Number(req.params.id);
-    await this.categoryService.update(category, id);
-    const updatedCategory = await this.getCategory(id);
-    res.send(updatedCategory[0]);
+    await this.categoryService.update(category, id, res);
   }
 
   public delete = async (req: Request, res: Response) => {
-    res.send(this.categoryService.delete());
+    const id = Number(req.params.id);
+    await this.categoryService.delete(id, res);
   }
 
   public routes() {
@@ -40,9 +39,5 @@ export class CategoryController {
     this.router.post('/', this.create);
     this.router.patch('/:id', this.update);
     this.router.delete('/:id', this.delete);
-  }
-
-  private getCategory = async (id: number) => {
-    return await this.categoryService.getCategory(id);
   }
 }

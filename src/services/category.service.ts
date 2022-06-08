@@ -1,3 +1,4 @@
+import { Response } from "express";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Category } from "../entity/Category";
@@ -17,15 +18,24 @@ export class CategoryService {
     return await this.categoryRepository.save(category);
   }
 
-  public async update(category: Category, id: number) {
-    return await this.categoryRepository.update(id, category);
+  public async update(categoryToUpdate: Category, id: number, res: Response) {
+    const category = await this.getCategory(id);
+    if (!category) return res.status(400).json({message: 'Category not found'});
+
+    await this.categoryRepository.update(id, categoryToUpdate);
+    res.send(category);
   }
 
-  public async delete() {
-    return 'delete from service';
+  public async delete(id: number, res: Response) {
+    const category = await this.getCategory(id);
+    if (!category) return res.status(400).json({message: 'Category not found'});
+
+    await this.categoryRepository.delete({ id: category.id });
+    const allCategories = await this.index();
+    res.send(allCategories);
   }
 
-  public async getCategory(id: number) {
-    return await this.categoryRepository.findBy({ id });
+  private async getCategory(id: number) {
+    return await this.categoryRepository.findOne({ where: { id }});
   }
 }

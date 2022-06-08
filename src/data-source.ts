@@ -1,4 +1,3 @@
-import { hostname } from "os"
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 

@@ -12,8 +12,8 @@ export class FoursquareController {
   }
 
   public search = async (req: Request, res: Response) => {
-    const place = await this.foursquareService.search(req.query);
-    res.send(place);
+    const { status, data } = await this.foursquareService.search(req);
+    res.status(status).send(data)
   }
 
   public routes() {
